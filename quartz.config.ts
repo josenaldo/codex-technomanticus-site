@@ -8,15 +8,15 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "My Dev Notebook",
-    pageTitleSuffix: " · My Dev Notebook",
+    pageTitle: "Codex Technomanticus",
+    pageTitleSuffix: " · Codex Technomanticus",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
     locale: "pt-BR",
-    baseUrl: "quartz.jzhao.xyz",
+    baseUrl: "josenaldo.github.io/codex-technomanticus-site",
     ignorePatterns: ["private", "_templates", ".obsidian", "00 - Inbox"],
     defaultDateType: "modified",
     theme: {
