@@ -28,9 +28,9 @@ O conteudo e escrito em Markdown no [Obsidian](https://obsidian.md/) e publicado
 
 O projeto usa dois repositorios separados que trabalham juntos:
 
-| Repositorio | Funcao |
-| --- | --- |
-| `codex-technomanticus` | Conteudo -- vault do Obsidian com todas as notas em Markdown |
+| Repositorio                 | Funcao                                                               |
+| --------------------------- | -------------------------------------------------------------------- |
+| `codex-technomanticus`      | Conteudo -- vault do Obsidian com todas as notas em Markdown         |
 | `codex-technomanticus-site` | Engine -- Quartz v4, configuracao, layout, tema e workflow de deploy |
 
 ### Como os dois repos se conectam
@@ -66,12 +66,35 @@ O projeto usa dois repositorios separados que trabalham juntos:
 
 ## Pre-requisitos
 
-| Ferramenta | Versao minima | Para que |
-| --- | --- | --- |
-| [Node.js](https://nodejs.org/) | 22+ | Runtime do Quartz |
-| npm | (vem com Node) | Gerenciador de pacotes |
-| [Git](https://git-scm.com/) | 2.x | Controle de versao |
-| [GitHub CLI (`gh`)](https://cli.github.com/) | 2.x | Disparar workflows manualmente, criar tokens |
+| Ferramenta                                   | Versao minima  | Para que                                                              |
+| -------------------------------------------- | -------------- | --------------------------------------------------------------------- |
+| [Node.js](https://nodejs.org/)               | 22+            | Runtime do Quartz                                                     |
+| npm                                          | (vem com Node) | Gerenciador de pacotes                                                |
+| [Git](https://git-scm.com/)                  | 2.x            | Controle de versao                                                    |
+| [GitHub CLI (`gh`)](https://cli.github.com/) | 2.x            | Criar repos, configurar secrets, disparar workflows, configurar Pages |
+
+### GitHub CLI (gh)
+
+O `gh` e a ferramenta oficial do GitHub para linha de comando. Ele permite criar repositorios, gerenciar secrets, disparar workflows, configurar GitHub Pages e muito mais -- tudo sem sair do terminal.
+
+**Se voce nao tem o `gh` instalado:**
+
+- **Instalacao:** <https://github.com/cli/cli#installation> (Linux, macOS, Windows)
+- **Documentacao oficial:** <https://cli.github.com/manual/>
+- **Minhas notas sobre o gh:** veja o artigo [GitHub CLI](https://josenaldo.github.io/codex-technomanticus-site/Infraestrutura/GitHub-CLI) no proprio Codex Technomanticus
+
+Apos instalar, autentique-se:
+
+```bash
+gh auth login
+```
+
+> **Nota:** e possivel fazer tudo sem o `gh` (criando repos pela interface web, configurando secrets em Settings > Secrets, etc.), mas o `gh` simplifica muito o processo. Os procedimentos alternativos via interface web estao documentados em:
+>
+> - Criar repositorio: <https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository>
+> - Configurar secrets: <https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions>
+> - Configurar GitHub Pages: <https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site>
+> - Disparar workflow manualmente: <https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/manually-running-a-workflow>
 
 ---
 
@@ -331,15 +354,15 @@ O arquivo principal de configuracao e o `quartz.config.ts`. Aqui estao as config
 
 ### Configuracao geral
 
-| Chave | Valor atual | Descricao |
-| --- | --- | --- |
-| `pageTitle` | `"Codex Technomanticus"` | Titulo exibido no header do site |
-| `pageTitleSuffix` | `" . Codex Technomanticus"` | Sufixo adicionado ao titulo de cada pagina no `<title>` |
-| `enableSPA` | `true` | Navegacao SPA (Single Page Application) para transicoes mais rapidas |
-| `enablePopovers` | `true` | Previews de links ao passar o mouse |
-| `locale` | `"pt-BR"` | Idioma do site (afeta datas, labels, etc.) |
-| `baseUrl` | `"josenaldo.github.io/codex-technomanticus-site"` | URL base para links absolutos, sitemap e RSS |
-| `defaultDateType` | `"modified"` | Exibe a data de modificacao nas paginas (nao a de criacao) |
+| Chave             | Valor atual                                       | Descricao                                                            |
+| ----------------- | ------------------------------------------------- | -------------------------------------------------------------------- |
+| `pageTitle`       | `"Codex Technomanticus"`                          | Titulo exibido no header do site                                     |
+| `pageTitleSuffix` | `" . Codex Technomanticus"`                       | Sufixo adicionado ao titulo de cada pagina no `<title>`              |
+| `enableSPA`       | `true`                                            | Navegacao SPA (Single Page Application) para transicoes mais rapidas |
+| `enablePopovers`  | `true`                                            | Previews de links ao passar o mouse                                  |
+| `locale`          | `"pt-BR"`                                         | Idioma do site (afeta datas, labels, etc.)                           |
+| `baseUrl`         | `"josenaldo.github.io/codex-technomanticus-site"` | URL base para links absolutos, sitemap e RSS                         |
+| `defaultDateType` | `"modified"`                                      | Exibe a data de modificacao nas paginas (nao a de criacao)           |
 
 ### Padroes ignorados
 
