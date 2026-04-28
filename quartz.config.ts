@@ -79,7 +79,7 @@ const config: QuartzConfig = {
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
       Plugin.ContentPage(),
-      Plugin.FolderPage(),
+      // Plugin.FolderPage(), // desativado: índices de pasta são controlados manualmente via README.md
       Plugin.TagPage(),
       Plugin.ContentIndex({
         enableSiteMap: true,
