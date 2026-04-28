@@ -17,7 +17,7 @@ const config: QuartzConfig = {
     },
     locale: "pt-BR",
     baseUrl: "josenaldo.github.io/codex-technomanticus-site",
-    ignorePatterns: ["private", ".obsidian"],
+    ignorePatterns: ["private", ".obsidian", "**/README.md"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
@@ -67,6 +67,7 @@ const config: QuartzConfig = {
         keepBackground: false,
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
+      Plugin.ReadmeToIndex(),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),

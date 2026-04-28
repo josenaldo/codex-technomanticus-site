@@ -30,6 +30,12 @@ jobs:
           repository: josenaldo/codex-technomanticus
           path: content
 
+      - name: Copy README.md as index.md
+        run: |
+          find content -name "README.md" | while read f; do
+            cp "$f" "$(dirname "$f")/index.md"
+          done
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
