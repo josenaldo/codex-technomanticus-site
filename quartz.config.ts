@@ -17,7 +17,7 @@ const config: QuartzConfig = {
     },
     locale: "pt-BR",
     baseUrl: "josenaldo.github.io/codex-technomanticus-site",
-    ignorePatterns: ["private", ".obsidian", "**/README.md"],
+    ignorePatterns: ["private", ".obsidian", "**/README.md", "docs", "docs/**", "copilot", "copilot/**"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
