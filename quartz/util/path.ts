@@ -59,6 +59,9 @@ function sluggify(s: string): string {
     .split("/")
     .map((segment) =>
       segment
+        .normalize("NFKD") // separa letra-base + acento (ç -> c + combining cedilla)
+        .replace(/[̀-ͯ]/g, "") // remove os acentos combinantes
+        .toLowerCase() // slug canônico em minúsculas
         .replace(/\s/g, "-")
         .replace(/&/g, "-and-")
         .replace(/%/g, "-percent")
