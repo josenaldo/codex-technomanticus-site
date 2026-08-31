@@ -6,6 +6,33 @@ const explorerOptions = {
     const excluded = new Set(["tags", "docs", "copilot"])
     return !excluded.has(node.slugSegment)
   },
+  // Mostra a numeração do arquivo/pasta no explorador ("01 - Título"), já que o
+  // `title` do frontmatter não carrega o prefixo numérico do nome do arquivo.
+  // NOTA: esta função é serializada com toString() e reavaliada no browser —
+  // ela precisa ser autocontida (sem referências a nada fora do próprio corpo).
+  mapFn: (node: any) => {
+    const source: string = node.isFolder
+      ? (node.slugSegment ?? "")
+      : (node.data?.filePath ?? node.slugSegment ?? "")
+    const raw = (source.split("/").pop() ?? "").replace(/\.mdx?$/i, "")
+    const match = raw.match(/^(\d+[a-z]?)\s*[-–—_.]/i)
+    if (!match) return
+    const prefix = match[1]
+    const name = node.displayName ?? ""
+    if (name.toLowerCase().startsWith(prefix.toLowerCase())) return
+    node.displayName = `${prefix} - ${name}`
+  },
+  // Ordena pelo slug (que preserva o prefixo numérico do nome do arquivo), e não
+  // pelo título — assim a ordem do site bate com a ordem do vault no Obsidian.
+  sortFn: (a: any, b: any) => {
+    if (a.isFolder !== b.isFolder) {
+      return a.isFolder ? -1 : 1
+    }
+    return (a.slugSegment ?? "").localeCompare(b.slugSegment ?? "", undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  },
 }
 
 // components shared across all pages
