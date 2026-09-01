@@ -23,32 +23,46 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
+        header: "Space Grotesk",
+        body: "IBM Plex Sans",
         code: "IBM Plex Mono",
       },
       colors: {
+        // Papel de cada variável no Quartz:
+        //   light        fundo da página
+        //   lightgray    bordas, fios, fundo de bloco de código
+        //   gray         metadado, data, links do grafo
+        //   darkgray     corpo de texto
+        //   dark         títulos e texto forte
+        //   secondary    links, título do site, nós do grafo
+        //   tertiary     hover de link, foco do grafo
+        //   highlight    fundo de link interno e de código inline
+        //   textHighlight  marcação ==assim==
+        //
+        // lightMode e darkMode são IGUAIS de propósito: o Codex é dark
+        // permanente, alinhado a josenaldo.com.br. Por isso o Darkmode() foi
+        // removido do quartz.layout.ts.
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#284b63",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#0B0E13",
+          lightgray: "#1A1E26",
+          gray: "#7C8494",
+          darkgray: "#C6CCD8",
+          dark: "#E9ECF2",
+          secondary: "#B69BF0",
+          tertiary: "#FFAA00",
+          highlight: "rgba(136, 85, 223, 0.14)",
+          textHighlight: "rgba(255, 170, 0, 0.35)",
         },
         darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#7b97aa",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          light: "#0B0E13",
+          lightgray: "#1A1E26",
+          gray: "#7C8494",
+          darkgray: "#C6CCD8",
+          dark: "#E9ECF2",
+          secondary: "#B69BF0",
+          tertiary: "#FFAA00",
+          highlight: "rgba(136, 85, 223, 0.14)",
+          textHighlight: "rgba(255, 170, 0, 0.35)",
         },
       },
     },
