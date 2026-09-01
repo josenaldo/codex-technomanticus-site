@@ -217,8 +217,23 @@ article {
   margin-top: 0.6rem;
 }
 
+/* O componente monta cada trecho como um flex-row [link][❯]. Quando um nome
+   longo quebra em duas linhas, o ❯ fica flutuando sozinho na direita,
+   centralizado na altura das duas. Voltando tudo para texto inline, o
+   separador segue a última palavra e a trilha quebra como frase. */
 .breadcrumb-container {
+  display: block;
   letter-spacing: 0.1em;
+  line-height: 1.6;
+
+  .breadcrumb-element {
+    display: inline;
+
+    p {
+      display: inline;
+      margin: 0 0.4rem;
+    }
+  }
 
   a:hover {
     color: var(--jm-accent);
