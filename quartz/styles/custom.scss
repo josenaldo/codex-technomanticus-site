@@ -418,14 +418,32 @@ a {
   }
 }
 
+/* Botão de modo leitura (esconde as laterais). O componente vem 20x32 com o
+   ícone em `absolute`; um `padding` aqui reduziria a caixa interna a 4px e o
+   ícone vazaria para fora da pílula. Então: quadrado fixo, ícone no fluxo e
+   centralizado por flex, do mesmo tamanho do botão de busca ao lado. */
 .readermode {
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px; /* mesma altura do botão de busca ao lado */
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--jm-fill);
   border-radius: var(--jm-radius-control);
-  padding: 8px;
 
   & svg {
+    position: static;
+    top: auto;
+    width: 18px;
+    height: 18px;
     fill: #98a0b0;
     stroke: #98a0b0;
+  }
+
+  &:hover {
+    background: var(--jm-fill-hover);
   }
 
   &:hover svg {
