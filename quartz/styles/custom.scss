@@ -116,6 +116,56 @@
   }
 }
 
+/* ---------- Barras de rolagem e controles nativos ----------------------- */
+
+/* O `color-scheme` do Quartz vinha do componente Darkmode, casado com o
+   atributo `saved-theme` no <html>. Sem o botão de tema, nenhuma das duas
+   regras se aplica e o navegador segue tratando a página como clara: barras
+   de rolagem brancas, seleção e campos nativos fora do tema. Como aqui o
+   dark é permanente, declaramos o esquema uma vez na raiz. */
+:root {
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+/* `scrollbar-color` é herdado, `scrollbar-width` não: sem o coringa os painéis
+   com rolagem própria (explorador, sumário) ficavam com a barra larga e com
+   setas nas pontas, só que pintada de escuro — pior que antes. */
+* {
+  scrollbar-width: thin;
+}
+
+/* WebKit antigo ignora `scrollbar-color`; o trilho fica invisível e o polegar
+   é uma cápsula fina, com a borda transparente servindo de respiro. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    background-clip: content-box;
+  }
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* ---------- Estrutura da página ---------------------------------------- */
 
 body {
