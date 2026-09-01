@@ -148,6 +148,7 @@ h5,
 h6 {
   font-family: var(--headerFont);
   letter-spacing: -0.02em;
+  line-height: 1.25; /* senão herdam o 1.75 do corpo e ficam frouxos em 2 linhas */
   color: var(--dark);
 }
 
@@ -549,5 +550,85 @@ footer {
 
   & ul {
     gap: 1.2rem;
+  }
+}
+
+/* ---------- Mobile ------------------------------------------------------
+   No mobile o Quartz vira uma coluna só e a lateral esquerda vira uma linha:
+   [explorador] [título] [busca] [modo leitura]. Três coisas quebravam aí.
+   ------------------------------------------------------------------------ */
+
+@media all and (max-width: 800px) {
+  /* 1. A coluna do grid é `auto`, então ela cresce até o min-content do item
+     mais largo — bastava um painel teimoso para a página inteira ganhar
+     rolagem horizontal e a barra de domínio sair da tela. `minmax(0, 1fr)`
+     prende a coluna à largura da viewport; tabela e código continuam
+     rolando dentro dos seus próprios contêineres. */
+  .page > #quartz-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 2. O explorador colapsa num botão de 34px, mas herdava o padding de
+     cartão (40px) e o fundo do painel — peso visual e 40px roubados da
+     linha. O conteúdo abre numa gaveta própria, que mantém o seu fundo. */
+  .explorer {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .sidebar.left {
+    gap: 10px;
+  }
+
+  /* 3. O título a 1.5rem quebrava em duas linhas e encostava na busca. */
+  .page-title {
+    font-size: 1.1rem;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  /* Busca só com o ícone — o rótulo sai do fluxo mas continua sendo o nome
+     acessível do botão. */
+  .search > .search-button {
+    padding: 9px 10px;
+    min-width: 0;
+
+    & > p {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  /* A barra de domínio: em telas estreitas o CTA estourava para fora da tela.
+     Marca e CTA encolhem o suficiente para os dois caberem inteiros em 320px;
+     as reticências na marca são a última linha de defesa, não o normal. */
+  .jm-topbar {
+    gap: 10px;
+    padding: 0 16px;
+
+    .jm-brand {
+      min-width: 0;
+      font-size: 15px;
+      gap: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      &::before {
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    .jm-nav .jm-cta {
+      flex: none;
+      font-size: 12.5px;
+      padding: 9px 12px;
+    }
   }
 }
