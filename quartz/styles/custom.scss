@@ -414,6 +414,31 @@ article ul li {
   }
 }
 
+/* ---------- Grade da página (desktop) ----------------------------------- */
+/* O Quartz usa `320px auto 320px`: a coluna central fica com toda a sobra,
+   mas o artigo é limitado à medida de leitura (68ch) e encosta à esquerda —
+   o resto virava um vão morto entre o texto e a lateral direita, e a lateral
+   ficava estreita demais para a árvore do explorador (nome quebrando a cada
+   duas palavras).
+
+   Aqui a sobra vai para as laterais em vez de virar vão: elas crescem até
+   400px, a coluna central nunca passa da medida de leitura, e a grade inteira
+   se centraliza — em tela larga o conjunto fica centrado, não esticado. */
+
+@media all and (min-width: 1200px) {
+  .page > #quartz-body {
+    grid-template-columns: minmax(300px, 400px) minmax(0, 700px) minmax(300px, 400px);
+    justify-content: center;
+    column-gap: 24px;
+  }
+
+  /* o seletor precisa do #quartz-body para vencer o do base.scss */
+  .page > #quartz-body .sidebar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 /* ---------- Painéis das laterais --------------------------------------- */
 
 .sidebar {
@@ -430,17 +455,26 @@ article ul li {
 .graph {
   background: var(--jm-surface);
   border-radius: var(--jm-radius-card);
-  padding: 18px 20px;
+  /* padding lateral enxuto: somado ao da lateral, ao recuo por nível e ao do
+     próprio link, o texto da árvore ficava com menos da metade da coluna */
+  padding: 16px 14px;
   box-shadow: var(--jm-shadow-card);
 }
 
 .explorer-content {
+  /* recuo por nível: 19px (6 de margem + 12.8 de padding) somavam rápido numa
+     árvore de quatro níveis */
+  ul {
+    padding-left: 0.55rem;
+    margin-left: 4px;
+  }
+
   a {
     color: #c6ccd8;
     font-weight: 400;
     box-shadow: none;
     border-radius: 8px;
-    padding: 3px 8px;
+    padding: 3px 6px;
     display: inline-block;
 
     &:hover {
