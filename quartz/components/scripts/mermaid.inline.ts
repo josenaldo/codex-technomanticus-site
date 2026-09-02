@@ -172,18 +172,6 @@ class DiagramPanZoom {
   }
 }
 
-const cssVars = [
-  "--secondary",
-  "--tertiary",
-  "--gray",
-  "--light",
-  "--lightgray",
-  "--highlight",
-  "--dark",
-  "--darkgray",
-  "--codeFont",
-] as const
-
 let mermaidImport = undefined
 document.addEventListener("nav", async () => {
   const center = document.querySelector(".center") as HTMLElement
@@ -211,30 +199,148 @@ document.addEventListener("nav", async () => {
       }
     }
 
-    const computedStyleMap = cssVars.reduce(
-      (acc, key) => {
-        acc[key] = window.getComputedStyle(document.documentElement).getPropertyValue(key)
-        return acc
-      },
-      {} as Record<(typeof cssVars)[number], string>,
-    )
+    // Tema do Mermaid — handoff v2, spec/05-mermaid.md.
+    // O init original passava 9 themeVariables genéricas, que governam só o
+    // flowchart: sequenceDiagram, stateDiagram-v2 e mindmap caíam no tema
+    // "dark" do próprio Mermaid (nota amarelo-papel, ator cinza, mindmap em
+    // arco-íris). Cada tipo tem o seu conjunto de variáveis; aqui vão todos.
+    // `theme: "base"` porque é o único que respeita todas elas.
+    // O original está no histórico do git (antes deste commit).
+    const JM = {
+      ink: "#E9ECF2", // texto forte
+      body: "#C6CCD8", // corpo
+      meta: "#98A0B0", // metadado
+      line: "#4E5666", // aresta
+      node: "#1B2029", // caixa
+      surface: "#14181F", // cartão em volta
+      band: "#0E1218",
+      brand: "#8855DF", // roxo — borda de nó
+      brandSoft: "#3A2F56",
+      accent: "#FFAA00", // âmbar — destaque
+      accentSoft: "rgba(255,170,0,.14)",
+    }
 
-    const darkMode = document.documentElement.getAttribute("saved-theme") === "dark"
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "loose",
-      theme: darkMode ? "dark" : "base",
+      // "base" nas duas: é o único tema que respeita TODAS as themeVariables.
+      // Com "dark", parte do que passamos é ignorada.
+      theme: "base",
+      fontFamily: 'IBM Plex Sans, system-ui, sans-serif',
       themeVariables: {
-        fontFamily: computedStyleMap["--codeFont"],
-        primaryColor: computedStyleMap["--light"],
-        primaryTextColor: computedStyleMap["--darkgray"],
-        primaryBorderColor: computedStyleMap["--tertiary"],
-        lineColor: computedStyleMap["--darkgray"],
-        secondaryColor: computedStyleMap["--secondary"],
-        tertiaryColor: computedStyleMap["--tertiary"],
-        clusterBkg: computedStyleMap["--light"],
-        edgeLabelBackground: computedStyleMap["--highlight"],
+        darkMode: true,
+        fontFamily: 'IBM Plex Sans, system-ui, sans-serif',
+        fontSize: "14px",
+
+        // ---- base / flowchart / graph -------------------------------------
+        background: JM.surface,
+        mainBkg: JM.node,
+        primaryColor: JM.node,
+        primaryTextColor: JM.ink,
+        primaryBorderColor: JM.brand,
+        secondaryColor: JM.band,
+        secondaryTextColor: JM.body,
+        secondaryBorderColor: JM.line,
+        tertiaryColor: JM.accentSoft,
+        tertiaryTextColor: JM.ink,
+        tertiaryBorderColor: JM.accent,
+        nodeBorder: JM.brand,
+        nodeTextColor: JM.ink,
+        lineColor: JM.line,
+        titleColor: JM.ink,
+        textColor: JM.body,
+        clusterBkg: "rgba(255,255,255,.03)",
+        clusterBorder: "rgba(255,255,255,.10)",
+        edgeLabelBackground: JM.surface,
+        defaultLinkColor: JM.line,
+
+        // ---- sequenceDiagram ----------------------------------------------
+        actorBkg: JM.node,
+        actorBorder: JM.brand,
+        actorTextColor: JM.ink,
+        actorLineColor: JM.brandSoft,
+        signalColor: JM.line,
+        signalTextColor: JM.meta,
+        labelBoxBkgColor: JM.band,
+        labelBoxBorderColor: JM.line,
+        labelTextColor: JM.ink,
+        loopTextColor: JM.meta,
+        // as notas eram o amarelo mais fora de lugar do conjunto
+        noteBkgColor: JM.accentSoft,
+        noteBorderColor: JM.accent,
+        noteTextColor: JM.ink,
+        activationBkgColor: "rgba(136,85,223,.18)",
+        activationBorderColor: JM.brand,
+        sequenceNumberColor: JM.band,
+
+        // ---- stateDiagram-v2 ----------------------------------------------
+        stateBkg: JM.node,
+        stateBorder: JM.brand,
+        labelColor: JM.ink,
+        altBackground: JM.band,
+        transitionColor: JM.line,
+        transitionLabelColor: JM.meta,
+        compositeBackground: "rgba(255,255,255,.03)",
+        compositeBorder: "rgba(255,255,255,.10)",
+        compositeTitleBackground: JM.band,
+        innerEndBackground: JM.accent,
+        specialStateColor: JM.accent,
+
+        // ---- mindmap (e qualquer coisa que use a escala categórica) -------
+        // Aqui morava o arco-íris. Ordem fixa: raiz em âmbar, ramos em roxo
+        // decrescente, depois neutros. Nunca verde/vermelho — no site essas
+        // cores têm significado semântico e num mindmap significariam nada.
+        cScale0: JM.accentSoft,
+        cScaleLabel0: JM.ink,
+        cScale1: "rgba(136,85,223,.26)",
+        cScaleLabel1: JM.ink,
+        cScale2: "rgba(136,85,223,.18)",
+        cScaleLabel2: JM.ink,
+        cScale3: "rgba(136,85,223,.12)",
+        cScaleLabel3: JM.body,
+        cScale4: "rgba(255,255,255,.08)",
+        cScaleLabel4: JM.body,
+        cScale5: "rgba(255,255,255,.05)",
+        cScaleLabel5: JM.body,
+        cScale6: "rgba(255,170,0,.10)",
+        cScaleLabel6: JM.body,
+        cScale7: "rgba(136,85,223,.09)",
+        cScaleLabel7: JM.body,
+        cScale8: "rgba(255,255,255,.04)",
+        cScaleLabel8: JM.meta,
+        cScale9: "rgba(136,85,223,.06)",
+        cScaleLabel9: JM.meta,
+        cScale10: "rgba(255,170,0,.07)",
+        cScaleLabel10: JM.meta,
+        cScale11: "rgba(255,255,255,.03)",
+        cScaleLabel11: JM.meta,
+
+        // ---- classDiagram / erDiagram (preventivo) ------------------------
+        classText: JM.ink,
+        attributeBackgroundColorOdd: JM.node,
+        attributeBackgroundColorEven: JM.band,
+
+        // ---- gantt / pie (preventivo) ------------------------------------
+        sectionBkgColor: "rgba(255,255,255,.03)",
+        sectionBkgColor2: "rgba(255,255,255,.05)",
+        taskBkgColor: JM.node,
+        taskBorderColor: JM.brand,
+        taskTextColor: JM.ink,
+        taskTextLightColor: JM.ink,
+        taskTextOutsideColor: JM.body,
+        gridColor: "rgba(255,255,255,.08)",
+        todayLineColor: JM.accent,
+        pie1: JM.accent,
+        pie2: JM.brand,
+        pie3: JM.line,
+        pieTitleTextColor: JM.ink,
+        pieSectionTextColor: JM.ink,
+        pieStrokeColor: JM.surface,
       },
+      // menos espaço morto nas caixas do mindmap
+      mindmap: { padding: 12 },
+      flowchart: { curve: "basis", padding: 16, useMaxWidth: true },
+      sequence: { useMaxWidth: true, actorMargin: 60, boxMargin: 12 },
     })
 
     await mermaid.run({ nodes })

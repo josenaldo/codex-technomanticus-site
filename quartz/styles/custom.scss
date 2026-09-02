@@ -291,28 +291,93 @@ article {
 }
 
 /* ---------- Links ------------------------------------------------------ */
+/* Regra central: o Quartz coloca font-weight 600 em TODO <a>. Numa nota MOC
+   com centenas de wikilinks isso vira uma parede roxa em negrito. Aqui o link
+   volta a ser texto: peso normal, cor de corpo, sublinhado fino. Só o hover e
+   o link externo ganham cor. */
 
 a {
   color: var(--jm-brand-text);
-  transition: color 0.12s ease;
+  font-weight: inherit; /* mata o 600 global do base.scss */
+  transition: color 0.12s ease, box-shadow 0.12s ease;
 
   &:hover {
     color: var(--jm-accent);
   }
 
+  /* Link interno (wikilink): lê como texto, não como botão */
   &.internal {
+    color: var(--darkgray);
     background: none;
     padding: 0;
     border-radius: 0;
-    box-shadow: inset 0 -1px 0 rgba(182, 155, 240, 0.35);
+    line-height: inherit;
+    box-shadow: inset 0 -1px 0 rgba(136, 85, 223, 0.55);
 
     &:hover {
+      color: var(--dark);
       box-shadow: inset 0 -1px 0 var(--jm-accent);
+    }
+
+    /* Wikilink quebrado: tracejado, sem cor de destaque */
+    &.broken {
+      color: var(--gray);
+      opacity: 1;
+      box-shadow: none;
+      border-bottom: 1px dashed rgba(124, 132, 148, 0.6);
+
+      &:hover {
+        color: var(--darkgray);
+      }
     }
 
     &.tag-link {
       box-shadow: none;
     }
+
+    &:has(> img) {
+      box-shadow: none;
+    }
+  }
+
+  /* Link externo: roxo + a seta que o Quartz já injeta */
+  &.external {
+    color: var(--jm-brand-text);
+    box-shadow: none;
+
+    & .external-icon {
+      margin: 0 0 0 0.15em;
+      opacity: 0.7;
+
+      & > path {
+        fill: currentColor;
+      }
+    }
+
+    &:hover {
+      color: var(--jm-accent);
+      box-shadow: inset 0 -1px 0 var(--jm-accent);
+    }
+  }
+
+  /* Âncora de heading: só aparece no hover do título */
+  &[role="anchor"] {
+    color: var(--gray);
+    box-shadow: none;
+
+    &:hover {
+      color: var(--jm-accent);
+    }
+  }
+}
+
+/* Listas de navegação (MOC, "Ver também", Recursos): respiro entre linhas,
+   já que agora são texto e não blocos coloridos */
+article ul li {
+  margin: 0.35rem 0;
+
+  &::marker {
+    color: #4e5666;
   }
 }
 
@@ -534,25 +599,149 @@ blockquote {
   }
 }
 
+/* ---------- Código ------------------------------------------------------ */
+/* Inline: neutro. Se ficar lavanda, compete com link e o leitor não sabe o que
+   é clicável. */
+
 code {
-  background: var(--jm-fill);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 6px;
-  padding: 0.12rem 0.36rem;
-  color: #dcd2f5;
-  font-size: 0.92em;
+  padding: 0.1rem 0.36rem;
+  color: var(--dark);
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+a code {
+  color: inherit;
+  background: rgba(136, 85, 223, 0.16);
+}
+
+/* Bloco: cartão próprio, com gutter de numeração legível e scrollbar discreta.
+   O tema de tokens vem do quartz.config.ts (ver codex/quartz.config.syntax.ts):
+   `dark-plus` nas duas chaves, keepBackground: false. */
+
+figure[data-rehype-pretty-code-figure],
+pre {
+  margin: 1.6rem 0;
 }
 
 pre {
+  position: relative;
   background: var(--jm-band) !important;
   border: none;
   border-radius: 14px;
-  padding: 20px 22px;
+  padding: 18px 0;
+  overflow-x: auto;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  tab-size: 2;
 
   & > code {
     background: none;
-    color: #c6ccd8;
-    font-size: 0.9rem;
+    border-radius: 0;
+    padding: 0;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: #d4d4d4; /* cor dos tokens sem classe — o que estava apagado */
+    counter-reset: line;
+
+    & > [data-line] {
+      display: block;
+      padding: 0 22px 0 0;
+      border-left: 2px solid transparent;
+    }
+
+    /* Gutter de numeração */
+    &[data-line-numbers] > [data-line]::before {
+      counter-increment: line;
+      content: counter(line);
+      display: inline-block;
+      width: 2.6rem;
+      margin-right: 1.1rem;
+      padding-right: 0.7rem;
+      text-align: right;
+      color: #4e5666;
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      user-select: none;
+    }
+
+    /* Linha destacada no markdown ({2,5}) */
+    & > [data-highlighted-line] {
+      background: rgba(255, 170, 0, 0.08);
+      border-left-color: var(--jm-accent);
+    }
+
+    /* Palavra destacada */
+    & [data-highlighted-chars] {
+      background: rgba(136, 85, 223, 0.22);
+      border-radius: 4px;
+      padding: 0.1em 0.2em;
+    }
   }
+
+  /* Rótulo de arquivo/linguagem quando o bloco tem title= */
+  & > [data-rehype-pretty-code-title],
+  & + [data-rehype-pretty-code-title] {
+    font-family: var(--codeFont);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c8494;
+  }
+
+  /* Botão de copiar do Quartz */
+  & > .clipboard-button {
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: 8px;
+    color: #98a0b0;
+    opacity: 0;
+
+    & svg {
+      fill: #98a0b0;
+      stroke: #98a0b0;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  &:hover > .clipboard-button {
+    opacity: 1;
+  }
+
+  /* Scrollbar horizontal discreta em vez da barra clara do sistema */
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+/* O Quartz configura o Shiki com duas chaves de tema, então emite
+   `data-theme="dark-plus dark-plus"` e a regra `code[data-theme*=" "] { color:
+   var(--shiki-light) }`. Essa variável só é escrita nos <span> com token; no
+   <code> ela é vazia, a declaração cai e a cor volta a herdar o cinza do corpo
+   — as linhas sem token continuavam apagadas mesmo depois de trocar o tema.
+   O atributo na ponta dá a especificidade que faltava (0,1,2 contra 0,1,1). */
+pre > code[data-theme] {
+  color: #d4d4d4;
 }
 
 table {
@@ -590,6 +779,346 @@ hr {
   border-radius: var(--jm-radius-card);
   background: var(--jm-surface);
   box-shadow: inset 3px 0 0 var(--color, var(--jm-accent));
+  padding: 18px 22px;
+
+  & .callout-title {
+    font-family: var(--headerFont);
+    font-weight: 600;
+    color: var(--dark);
+  }
+}
+
+/* Popover de link interno */
+.popover > .popover-inner {
+  background: var(--jm-surface);
+  border: none;
+  border-radius: var(--jm-radius-card);
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 1);
+}
+
+/* ---------- Diagramas (Mermaid) ---------------------------------------- */
+/* O Mermaid desenha com as cores do tema "dark" dele, que não são as nossas.
+   Aqui o SVG é repintado nos tokens do site: superfície de cartão, nós em roxo,
+   arestas cinza, texto em ink. `!important` é necessário: o Mermaid escreve
+   estilo inline em cada nó. */
+
+.mermaid,
+pre:has(> code.mermaid),
+#mermaid-space {
+  background: var(--jm-surface) !important;
+  border-radius: var(--jm-radius-card);
+  padding: 22px;
+  box-shadow: var(--jm-shadow-card);
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+
+  /* Caixas e formas */
+  .node rect,
+  .node circle,
+  .node ellipse,
+  .node polygon,
+  .node path,
+  .actor,
+  .labelBox,
+  .rect,
+  .task {
+    fill: #1b2029 !important;
+    stroke: var(--jm-brand) !important;
+    stroke-width: 1.5px !important;
+    rx: 10px;
+    ry: 10px;
+  }
+
+  /* Agrupamentos / subgraphs */
+  .cluster rect {
+    fill: rgba(255, 255, 255, 0.03) !important;
+    stroke: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Arestas */
+  .edgePath .path,
+  .flowchart-link,
+  line,
+  .messageLine0,
+  .messageLine1 {
+    stroke: #4e5666 !important;
+    stroke-width: 1.5px !important;
+  }
+
+  marker path,
+  .arrowheadPath,
+  #arrowhead path {
+    fill: #4e5666 !important;
+    stroke: none !important;
+  }
+
+  /* Texto */
+  .nodeLabel,
+  .edgeLabel,
+  .label text,
+  text.actor,
+  .titleText,
+  .taskText,
+  .loopText,
+  tspan {
+    fill: var(--dark) !important;
+    color: var(--dark) !important;
+    font-family: var(--bodyFont) !important;
+    font-size: 14px !important;
+  }
+
+  .edgeLabel {
+    & rect,
+    & .labelBkg {
+      fill: var(--jm-surface) !important;
+      background: var(--jm-surface) !important;
+    }
+
+    & tspan {
+      fill: #98a0b0 !important;
+      font-size: 12px !important;
+    }
+  }
+
+  /* Nó em destaque (classDef ... via `:::destaque`) */
+  .destaque rect,
+  .destaque circle,
+  .destaque polygon {
+    fill: rgba(255, 170, 0, 0.14) !important;
+    stroke: var(--jm-accent) !important;
+  }
+
+  /* Sequence / Gantt: faixas e grade */
+  .sectionTitle,
+  .grid .tick text {
+    fill: #7c8494 !important;
+  }
+
+  .grid path,
+  .grid line {
+    stroke: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  /* ---- sequenceDiagram ------------------------------------------------
+     A linha de vida do ator e as caixas de loop/alt vinham em cinza claro;
+     as notas, em amarelo-papel. O patch de themeVariables
+     (codex/mermaid-theme.ts) resolve a cor; aqui ficam raio e peso. */
+
+  .actor-line {
+    stroke: #3a2f56 !important;
+    stroke-dasharray: 3 4 !important;
+  }
+
+  .activation0,
+  .activation1,
+  .activation2 {
+    fill: rgba(136, 85, 223, 0.18) !important;
+    stroke: var(--jm-brand) !important;
+  }
+
+  .note,
+  .noteText {
+    rx: 8px;
+    ry: 8px;
+  }
+
+  .loopLine {
+    stroke: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .labelBox {
+    rx: 8px;
+    ry: 8px;
+  }
+
+  /* ---- stateDiagram-v2 -----------------------------------------------
+     Estado inicial/final são círculos cheios: em âmbar, para marcar as duas
+     pontas do fluxo. */
+
+  .statediagram-state rect,
+  .statediagram-cluster rect {
+    rx: 10px;
+    ry: 10px;
+  }
+
+  .statediagram-state .start-state,
+  .statediagram-state .end-state-inner,
+  circle.state-start,
+  .node circle.state-start {
+    fill: var(--jm-accent) !important;
+    stroke: var(--jm-accent) !important;
+  }
+
+  .statediagram-cluster.statediagram-cluster-alt rect {
+    fill: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .statediagram-note rect {
+    fill: rgba(255, 170, 0, 0.14) !important;
+    stroke: var(--jm-accent) !important;
+    rx: 8px;
+    ry: 8px;
+  }
+
+  /* ---- mindmap --------------------------------------------------------
+     É onde o arco-íris do Mermaid mais aparecia (toda nota "…em
+     entrevista"). A cor vem das cScale* do patch; aqui vão forma, peso e a
+     hierarquia de tamanho de texto por nível. */
+
+  .mindmap-node > rect,
+  .mindmap-node > circle,
+  .mindmap-node > ellipse,
+  .mindmap-node > polygon,
+  .mindmap-node > path {
+    stroke-width: 1.5px !important;
+    rx: 10px;
+    ry: 10px;
+  }
+
+  .mindmap-node.section-root > circle,
+  .mindmap-node.section--1 > circle {
+    stroke: var(--jm-accent) !important;
+  }
+
+  .mindmap-node.section-root .text-inner-tspan,
+  .mindmap-node.section--1 .text-inner-tspan {
+    font-family: var(--headerFont) !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+  }
+
+  .mindmap-node.section-0 .text-inner-tspan,
+  .mindmap-node.section-1 .text-inner-tspan,
+  .mindmap-node.section-2 .text-inner-tspan {
+    font-family: var(--headerFont) !important;
+    font-weight: 600 !important;
+  }
+
+  .mindmap-node .text-inner-tspan {
+    fill: var(--dark) !important;
+    font-family: var(--bodyFont) !important;
+    font-size: 13px !important;
+  }
+
+  .edge {
+    stroke: #4e5666 !important;
+  }
+}
+
+/* Escotilha de emergência — NÃO recomendada, deixada comentada de propósito.
+   Vários diagramas do vault (Kubernetes) cravam cor no markdown com
+   `style X fill:#4a3b7a,...`. Estilo inline ganha de themeVariables e do CSS
+   acima, então esses nós continuam fora da paleta. Descomentar força a
+   paleta por cima — ao custo de apagar a distinção que você fez entre os nós.
+   O certo é trocar `style` por `classDef ... :::classe`; o mapa de
+   equivalência está em codex/mermaid-theme.ts.
+
+.mermaid svg g.node[style] rect,
+.mermaid svg g.node[style] polygon,
+.mermaid svg g.node[style] circle {
+  fill: #1b2029 !important;
+  stroke: var(--jm-brand) !important;
+}
+*/
+
+/* Classes canônicas de diagrama — use com `:::destaque`, `:::marca`, etc.
+   Duplicam o classDef do markdown, para o caso de o diagrama declarar a
+   classe sem cor. */
+
+.mermaid svg {
+  .marca rect,
+  .marca polygon,
+  .marca circle {
+    fill: rgba(136, 85, 223, 0.2) !important;
+    stroke: var(--jm-brand) !important;
+  }
+
+  .neutro rect,
+  .neutro polygon,
+  .neutro circle {
+    fill: #1b2029 !important;
+    stroke: #4e5666 !important;
+  }
+
+  .falha rect,
+  .falha polygon,
+  .falha circle {
+    fill: rgba(255, 107, 107, 0.14) !important;
+    stroke: #ff6b6b !important;
+  }
+
+  .ok rect,
+  .ok polygon,
+  .ok circle {
+    fill: rgba(74, 222, 128, 0.13) !important;
+    stroke: #4ade80 !important;
+  }
+}
+
+/* Modal de zoom do diagrama */
+#mermaid-container {
+  background: rgba(7, 8, 11, 0.72) !important;
+
+  & > #mermaid-space {
+    border: none !important;
+    box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 1);
+  }
+
+  & .mermaid-control-button {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: var(--dark) !important;
+  }
+}
+
+.expand-button {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: none !important;
+  border-radius: 8px !important;
+
+  & > svg {
+    fill: #98a0b0 !important;
+    filter: none !important;
+  }
+}
+
+table {
+  border-radius: var(--jm-radius-card);
+  overflow: hidden;
+  background: var(--jm-surface);
+
+  th {
+    font-family: var(--codeFont);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #98a0b0;
+    background: var(--jm-band);
+    border-bottom: 1px solid var(--jm-line);
+  }
+
+  td {
+    border-bottom: 1px solid var(--jm-line);
+  }
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: var(--jm-line);
+  margin: 2.4rem 0;
+}
+
+/* Callouts do Obsidian: superfície de cartão + barra de acento */
+.callout {
+  border: none;
+  border-radius: var(--jm-radius-card);
+  background: var(--jm-surface);
+  box-shadow: inset 3px 0 0 var(--jm-accent);
   padding: 18px 22px;
 
   & .callout-title {

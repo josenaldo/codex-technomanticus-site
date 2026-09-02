@@ -108,10 +108,14 @@ const config: QuartzConfig = {
       Plugin.CreatedModifiedDate({
         priority: ["frontmatter", "git", "filesystem"],
       }),
+      // `dark-plus` nas duas chaves: sobre a superfície #0E1218 do bloco, o
+      // token sem classe do github-dark cai para ~3:1 — é o que deixava as
+      // linhas com cara de apagadas. keepBackground: false porque o cartão de
+      // código é o nosso, não o do tema.
       Plugin.SyntaxHighlighting({
         theme: {
-          light: "github-light",
-          dark: "github-dark",
+          light: "dark-plus",
+          dark: "dark-plus",
         },
         keepBackground: false,
       }),
