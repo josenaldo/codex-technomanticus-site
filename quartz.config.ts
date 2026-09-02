@@ -17,7 +17,42 @@ const config: QuartzConfig = {
     },
     locale: "pt-BR",
     baseUrl: "josenaldo.github.io/codex-technomanticus-site",
-    ignorePatterns: ["private", ".obsidian", "**/README.md", "docs", "docs/**", "copilot", "copilot/**"],
+    ignorePatterns: [
+      "private",
+      ".obsidian",
+      "**/README.md",
+      "docs",
+      "docs/**",
+      "copilot",
+      "copilot/**",
+      // O site publica o que tem valor pra quem chega de fora: os domínios e as
+      // sendas. As zonas de trabalho do grimório (meta, pergaminhos, glosas) e a
+      // governança de conteúdo (roadmaps de galho, specs de design) continuam no
+      // Obsidian, mas não viram página pública. A exceção é 00-Meta/mestres, que
+      // é conteúdo de referência e recebe links das notas dos domínios.
+      "**/roadmap.md",
+      "00-Meta/Roadmap.md",
+      "00-Meta/index.md",
+      "00-Meta/specs",
+      "00-Meta/specs/**",
+      "00-Meta/guia",
+      "00-Meta/guia/**",
+      "00-Meta/health-audits",
+      "00-Meta/health-audits/**",
+      "00-Meta/pesquisas",
+      "00-Meta/pesquisas/**",
+      "00-Meta/revisoes",
+      "00-Meta/revisoes/**",
+      "00-Meta/scripts",
+      "00-Meta/scripts/**",
+      "00-Meta/templates",
+      "00-Meta/templates/**",
+      "01-Pergaminhos",
+      "01-Pergaminhos/**",
+      "02-Glosas",
+      "02-Glosas/**",
+      "monkey-patching.md",
+    ],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",

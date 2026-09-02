@@ -16,12 +16,21 @@ interface FolderContentOptions {
    */
   showFolderCount: boolean
   showSubfolders: boolean
+  /**
+   * Quando a pasta tem um index.md com conteúdo próprio (uma MOC escrita à mão),
+   * esconde a listagem automática de arquivos. O índice curado já diz o que cada
+   * nota é e em que ordem ler; a listagem gerada só repete os títulos com data e
+   * tags, sem contexto para quem chega de fora. Pastas sem index.md continuam
+   * ganhando a listagem, senão ficariam sem navegação alguma.
+   */
+  hidePageListingWhenIndexHasContent: boolean
   sort?: SortFn
 }
 
 const defaultOptions: FolderContentOptions = {
   showFolderCount: true,
   showSubfolders: true,
+  hidePageListingWhenIndexHasContent: true,
 }
 
 export default ((opts?: Partial<FolderContentOptions>) => {
@@ -96,27 +105,30 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       allFiles: allPagesInFolder,
     }
 
+    const hasOwnContent = (tree as Root).children.length > 0
     const content = (
-      (tree as Root).children.length === 0
-        ? fileData.description
-        : htmlToJsx(fileData.filePath!, tree)
+      hasOwnContent ? htmlToJsx(fileData.filePath!, tree) : fileData.description
     ) as ComponentChildren
+
+    const showPageListing = !(hasOwnContent && options.hidePageListingWhenIndexHasContent)
 
     return (
       <div class="popover-hint">
         <article class={classes}>{content}</article>
-        <div class="page-listing">
-          {options.showFolderCount && (
-            <p>
-              {i18n(cfg.locale).pages.folderContent.itemsUnderFolder({
-                count: allPagesInFolder.length,
-              })}
-            </p>
-          )}
-          <div>
-            <PageList {...listProps} />
+        {showPageListing && (
+          <div class="page-listing">
+            {options.showFolderCount && (
+              <p>
+                {i18n(cfg.locale).pages.folderContent.itemsUnderFolder({
+                  count: allPagesInFolder.length,
+                })}
+              </p>
+            )}
+            <div>
+              <PageList {...listProps} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     )
   }
