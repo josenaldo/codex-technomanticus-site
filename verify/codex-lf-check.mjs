@@ -202,7 +202,13 @@ const mermaidBlocks = countIn(html, /class="mermaid"/g)
 if (mermaidBlocks > 0) ok("Diagramas", `${mermaidBlocks} bloco(s) Mermaid no build`)
 else warn("Diagramas", "nenhum bloco Mermaid no build — nada a verificar aqui")
 
-const inlineStyled = filesMatching(html, /style\s+\w+\s+fill:#|fill:#[0-9a-f]{3,6},stroke:/i)
+// CORREÇÃO (Codex, 2026-09-02): a segunda alternativa do regex original
+// (`fill:#…,stroke:`) passou a casar com as nossas próprias linhas
+// `classDef neutro fill:#1B2029,stroke:#4E5666` — ou seja, acusava como
+// defeito exatamente a correção que ela pede. O que importa é o estilo
+// inline por nó, que só existe na forma `style <id> fill:`. `\S` no lugar de
+// `\w` porque há id de nó com acento (Execução, Lexicográfico).
+const inlineStyled = filesMatching(html, /style\s+\S+\s+fill:\s*#/i)
 if (inlineStyled.length === 0) ok("Cor cravada em diagrama", "nenhum `style X fill:#…` no markdown publicado")
 else
   warn(
