@@ -214,6 +214,15 @@ article {
   font-size: 1.05rem;
   line-height: 1.75;
 
+  /* O base.scss cobre p/li/tbody com `line-height: 1.6rem` — um valor FIXO,
+     não uma razão. Contra o corpo de 1.05rem isso dá 1.52 e aperta a leitura;
+     o contrato pede 1.75. Reafirmado aqui como razão, que acompanha o tamanho. */
+  p,
+  li,
+  tbody {
+    line-height: 1.75;
+  }
+
   h2 {
     font-size: 1.7rem;
     font-weight: 700;
@@ -286,6 +295,12 @@ article {
   }
 
   a:hover {
+    color: var(--jm-accent);
+  }
+
+  /* Último item = "você está aqui". Vem sem href (o Quartz zera o path do nó
+     atual), então o seletor de atributo o pega sem precisar de classe. */
+  .breadcrumb-element:last-child a {
     color: var(--jm-accent);
   }
 }
@@ -436,6 +451,17 @@ article ul li {
   .page > #quartz-body .sidebar {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  /* O Quartz dá 6rem de respiro no topo da lateral e do cabeçalho ($topSpacing).
+     Isso fazia sentido quando não havia nada acima; com a barra de domínio fixa
+     de 68px, vira 96px de vão morto entre a barra e o conteúdo. */
+  .page > #quartz-body .sidebar {
+    padding-top: 2rem;
+  }
+
+  .page > #quartz-body .page-header {
+    margin-top: 2rem;
   }
 }
 
