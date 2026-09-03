@@ -39,7 +39,10 @@ export default {
       createdWith: "Criado com",
     },
     graph: {
-      title: "Visão de gráfico",
+      // "Grafo" e "Índice" (em vez de "Visão de gráfico" e "Sumário") para bater
+      // com a régua visual do handoff — rótulo de painel é etiqueta curta em
+      // mono e caixa alta, não frase. O text-transform vem do custom.scss.
+      title: "Grafo",
     },
     recentNotes: {
       title: "Notas recentes",
@@ -54,7 +57,7 @@ export default {
       searchBarPlaceholder: "Pesquisar por algo",
     },
     tableOfContents: {
-      title: "Sumário",
+      title: "Índice",
     },
     contentMeta: {
       readingTime: ({ minutes }) => `Leitura de ${minutes} min`,
